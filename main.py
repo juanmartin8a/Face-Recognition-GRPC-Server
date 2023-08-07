@@ -18,11 +18,23 @@ class FaceRecognition(faceRecognition_pb2_grpc.FaceRecognitionServicer):
       transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),
     ])
 
-  def GetEmbedding(self, request, context):
-    return self._process_image(request.image)
+  def getFaceEmbedding(self, request, context):
+    response = faceRecognition_pb2.EmbeddingResponse()
+
+    image = self._process_image(request.image)
+
+    image.unsqueeze(0)
+
+    input = image.numpy()
+
+    res = self.model.run(None, {self.model.get_inputs()[0].name: input})
+    embedding = res[0][0].tolist()
+
+    response.embedding.extend(embedding)
+
+    return response
 
   def getFaceEmbeddings(self, request, context):
-
     response = faceRecognition_pb2.MultipleEmbeddingResponse()
 
     images = []
@@ -37,7 +49,6 @@ class FaceRecognition(faceRecognition_pb2_grpc.FaceRecognitionServicer):
     res = self.model.run(None, {self.model.get_inputs()[0].name: input})
     embeddings = res[0].tolist()
 
-    response = faceRecognition_pb2.MultipleEmbeddingResponse()
     for embedding in embeddings:
       embedding_response = faceRecognition_pb2.EmbeddingResponse()
       embedding_response.embedding.extend(embedding)
