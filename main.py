@@ -1,6 +1,7 @@
 import io
 import sys
 import grpc
+import numpy as np
 from torchvision import transforms
 import torch
 import onnxruntime as ort
@@ -56,6 +57,11 @@ class FaceRecognition(faceRecognition_pb2_grpc.FaceRecognitionServicer):
     res = self.model.run(None, {self.model.get_inputs()[0].name: input})
     embedding = res[0][0].tolist()
 
+    embedding_float64 = np.array(embedding)  # assuming embeddings is a list or array of float64
+    embedding_float32 = embedding_float64.astype(np.float32)
+
+    embedding = embedding_float32.tolist()
+
     response.embedding.extend(embedding)
 
     return response
@@ -74,6 +80,11 @@ class FaceRecognition(faceRecognition_pb2_grpc.FaceRecognitionServicer):
 
     res = self.model.run(None, {self.model.get_inputs()[0].name: input})
     embeddings = res[0].tolist()
+
+    embeddings_float64 = np.array(embeddings)
+    embeddings_float32 = embeddings_float64.astype(np.float32)
+
+    embeddings = embeddings_float32.tolist()
 
     for embedding in embeddings:
       embedding_response = faceRecognition_pb2.EmbeddingResponse()

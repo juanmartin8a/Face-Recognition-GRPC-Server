@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from protos import faceRecognition_pb2 as protos_dot_faceRecognition__pb2
+import faceRecognition_pb2 as faceRecognition__pb2
 
 
 class FaceRecognitionStub(object):
@@ -16,13 +16,13 @@ class FaceRecognitionStub(object):
         """
         self.getFaceEmbedding = channel.unary_unary(
                 '/faceRecognition.FaceRecognition/getFaceEmbedding',
-                request_serializer=protos_dot_faceRecognition__pb2.ImageRequest.SerializeToString,
-                response_deserializer=protos_dot_faceRecognition__pb2.EmbeddingResponse.FromString,
+                request_serializer=faceRecognition__pb2.ImageRequest.SerializeToString,
+                response_deserializer=faceRecognition__pb2.EmbeddingResponse.FromString,
                 )
         self.getFaceEmbeddings = channel.unary_unary(
                 '/faceRecognition.FaceRecognition/getFaceEmbeddings',
-                request_serializer=protos_dot_faceRecognition__pb2.MultipleImageRequest.SerializeToString,
-                response_deserializer=protos_dot_faceRecognition__pb2.MultipleEmbeddingResponse.FromString,
+                request_serializer=faceRecognition__pb2.MultipleImageRequest.SerializeToString,
+                response_deserializer=faceRecognition__pb2.MultipleEmbeddingResponse.FromString,
                 )
 
 
@@ -46,13 +46,13 @@ def add_FaceRecognitionServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'getFaceEmbedding': grpc.unary_unary_rpc_method_handler(
                     servicer.getFaceEmbedding,
-                    request_deserializer=protos_dot_faceRecognition__pb2.ImageRequest.FromString,
-                    response_serializer=protos_dot_faceRecognition__pb2.EmbeddingResponse.SerializeToString,
+                    request_deserializer=faceRecognition__pb2.ImageRequest.FromString,
+                    response_serializer=faceRecognition__pb2.EmbeddingResponse.SerializeToString,
             ),
             'getFaceEmbeddings': grpc.unary_unary_rpc_method_handler(
                     servicer.getFaceEmbeddings,
-                    request_deserializer=protos_dot_faceRecognition__pb2.MultipleImageRequest.FromString,
-                    response_serializer=protos_dot_faceRecognition__pb2.MultipleEmbeddingResponse.SerializeToString,
+                    request_deserializer=faceRecognition__pb2.MultipleImageRequest.FromString,
+                    response_serializer=faceRecognition__pb2.MultipleEmbeddingResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -76,8 +76,8 @@ class FaceRecognition(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/faceRecognition.FaceRecognition/getFaceEmbedding',
-            protos_dot_faceRecognition__pb2.ImageRequest.SerializeToString,
-            protos_dot_faceRecognition__pb2.EmbeddingResponse.FromString,
+            faceRecognition__pb2.ImageRequest.SerializeToString,
+            faceRecognition__pb2.EmbeddingResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -93,7 +93,7 @@ class FaceRecognition(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/faceRecognition.FaceRecognition/getFaceEmbeddings',
-            protos_dot_faceRecognition__pb2.MultipleImageRequest.SerializeToString,
-            protos_dot_faceRecognition__pb2.MultipleEmbeddingResponse.FromString,
+            faceRecognition__pb2.MultipleImageRequest.SerializeToString,
+            faceRecognition__pb2.MultipleEmbeddingResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
