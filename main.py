@@ -10,7 +10,6 @@ import protos.faceRecognition_pb2 as faceRecognition_pb2
 from concurrent import futures
 from PIL import Image
 
-from grpc_health.v1 import health
 from grpc_health.v1 import health_pb2, health_pb2_grpc
 
 class HealthServicer(health_pb2_grpc.HealthServicer):
@@ -31,7 +30,7 @@ class FaceRecognition(faceRecognition_pb2_grpc.FaceRecognitionServicer):
   def __init__(self):
     self.model = ort.InferenceSession("models/model.onnx")
     self.preprocess = transforms.Compose([
-      # transforms.Resize((112,112)),
+      transforms.Resize((112,112)),
       transforms.ToTensor(),
       transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),
     ])
