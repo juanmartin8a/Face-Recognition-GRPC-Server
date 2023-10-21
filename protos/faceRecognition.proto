@@ -11,7 +11,7 @@ message MultipleImageRequest {
 }
 
 message EmbeddingResponse {
-  repeated double embedding = 1;  // Embedding will be a list of floats
+  repeated float embedding = 1;  // Embedding will be a list of floats
 }
 
 message MultipleEmbeddingResponse {
