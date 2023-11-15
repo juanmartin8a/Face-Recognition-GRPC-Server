@@ -1,4 +1,5 @@
 import io
+import os
 import sys
 import grpc
 import numpy as np
@@ -99,17 +100,33 @@ class FaceRecognition(faceRecognition_pb2_grpc.FaceRecognitionServicer):
     return image_tensor
   
 def serve():
-  server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
   
-  face_recognition_service = FaceRecognition()
-  faceRecognition_pb2_grpc.add_FaceRecognitionServicer_to_server(face_recognition_service, server)
+    face_recognition_service = FaceRecognition()
+    faceRecognition_pb2_grpc.add_FaceRecognitionServicer_to_server(face_recognition_service, server)
 
-  health_servicer = HealthServicer(face_recognition_service)
-  health_pb2_grpc.add_HealthServicer_to_server(health_servicer, server)
+    health_servicer = HealthServicer(face_recognition_service)
+    health_pb2_grpc.add_HealthServicer_to_server(health_servicer, server)
 
-  server.add_insecure_port('[::]:50051')
-  server.start()
-  server.wait_for_termination()
+    env = os.environ.get('ENV')
+
+    if (env == "prod"):
+        # Load the generated ECC private key and SSL certificate
+        with open('keys/private.pem', 'rb') as f:
+            private_key = f.read()
+        with open('keys/certificate.pem', 'rb') as f:
+            certificate_chain = f.read()
+
+        server_credentials = grpc.ssl_server_credentials(
+            ((private_key, certificate_chain,),)
+        )
+
+        server.add_secure_port('[::]:50051', server_credentials)
+    else:
+        server.add_insecure_port('[::]:50051')
+
+    server.start()
+    server.wait_for_termination()
 
 if __name__ == "__main__":
-  serve()
+    serve()
