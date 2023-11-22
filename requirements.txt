@@ -1,0 +1,6 @@
+grpcio
+numpy
+Pillow
+torch
+torchvision
+onnxruntime-gpu
