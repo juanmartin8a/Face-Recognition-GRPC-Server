@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: juanmartin8a/frs:0.0.1
+    ports:
+      - "50051:50051"
+    environment:
+      - ENV=prod
+    restart: unless-stopped
