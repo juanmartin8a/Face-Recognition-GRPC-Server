@@ -17,6 +17,7 @@ RUN apt install -y python3.11 python3.11-distutils python3.11-venv
 # Start env
 RUN python3.11 -m venv venv
 ENV PATH=/app/venv/bin:$PATH
+ENV ENV=prod
 
 # Install pip
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
