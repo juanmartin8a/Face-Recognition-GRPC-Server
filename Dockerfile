@@ -5,14 +5,14 @@ FROM nvidia/cuda:11.8.0-base-ubuntu20.04
 WORKDIR /app
 
 # Add deadsnakes PPA for Python 3.11
-RUN apt update && \
-    apt install -y curl && \
-    apt install -y software-properties-common && \
+RUN apt-get update && \
+    apt-get install -y curl && \
+    apt-get install -y software-properties-common && \
     add-apt-repository ppa:deadsnakes/ppa && \
-    apt update
+    apt-get update
 
 # Install Python 3.11
-RUN apt install -y python3.11 python3.11-distutils python3.11-venv
+RUN apt-get install -y python3.11 python3.11-distutils python3.11-venv
 
 # Start env
 RUN python3.11 -m venv venv
