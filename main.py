@@ -13,6 +13,8 @@ from PIL import Image
 
 from grpc_health.v1 import health_pb2, health_pb2_grpc
 
+env = os.environ.get('ENV')
+
 class HealthServicer(health_pb2_grpc.HealthServicer):
   def __init__(self, face_recognition_service):
     self.face_recognition_service = face_recognition_service
@@ -29,18 +31,15 @@ class HealthServicer(health_pb2_grpc.HealthServicer):
 class FaceRecognition(faceRecognition_pb2_grpc.FaceRecognitionServicer):
 
   def __init__(self):
-    self.model = ort.InferenceSession("models/model.onnx")
+    if (env == "prod"):
+      self.model = ort.InferenceSession("models/model.onnx", providers=["CUDAExecutionProvider"])
+    else:
+      self.model = ort.InferenceSession("models/model.onnx")
     self.preprocess = transforms.Compose([
       transforms.Resize((112,112)),
       transforms.ToTensor(),
       transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),
     ])
-
-  def load_model(self):
-    try:
-      self.model = ort.InferenceSession("models/model.onnx")
-    except Exception as e:
-      print(f"Error loading model: {e}", file=sys.stderr)
 
   def is_healthy(self):
     return self.model is not None
@@ -107,8 +106,6 @@ def serve():
 
     health_servicer = HealthServicer(face_recognition_service)
     health_pb2_grpc.add_HealthServicer_to_server(health_servicer, server)
-
-    env = os.environ.get('ENV')
 
     if (env == "prod"):
         # Load the generated ECC private key and SSL certificate
