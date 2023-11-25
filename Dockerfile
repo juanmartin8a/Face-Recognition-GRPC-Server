@@ -1,8 +1,11 @@
 # Start from a CUDA base image
-FROM nvidia/cuda:11.8.0-base-ubuntu20.04
+FROM nvidia/cuda:11.8.0-base-ubuntu22.04
 
 # Set up working directory
 WORKDIR /app
+
+# Set env variable to make it not interactive
+ENV DEVIAN_FRONTEND=noninteractive
 
 # Add deadsnakes PPA for Python 3.11
 RUN apt-get update && \
@@ -17,7 +20,6 @@ RUN apt-get install -y python3.11 python3.11-distutils python3.11-venv
 # Start env
 RUN python3.11 -m venv venv
 ENV PATH=/app/venv/bin:$PATH
-ENV ENV=prod
 
 # Install pip
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
