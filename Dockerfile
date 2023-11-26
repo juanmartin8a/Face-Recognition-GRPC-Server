@@ -4,7 +4,7 @@ FROM nvidia/cuda:11.8.0-base-ubuntu22.04
 # Set up working directory
 WORKDIR /app
 
-# Set env variable to make it not interactive
+# Set env variable to make it install commands not interactive
 ENV DEVIAN_FRONTEND=noninteractive
 
 # Add deadsnakes PPA for Python 3.11
