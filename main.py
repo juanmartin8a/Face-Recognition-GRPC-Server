@@ -99,7 +99,15 @@ class FaceRecognition(faceRecognition_pb2_grpc.FaceRecognitionServicer):
     return image_tensor
   
 def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=4))
+    max_message_length = 10 * 1024 * 1024 # 10MB
+
+    server = grpc.server(
+        futures.ThreadPoolExecutor(max_workers=4),
+        options=[
+            ('grpc.max_send_message_length', max_message_length),
+            ('grpc.max_receive_message_length', max_message_length)
+        ]
+    )
   
     face_recognition_service = FaceRecognition()
     faceRecognition_pb2_grpc.add_FaceRecognitionServicer_to_server(face_recognition_service, server)
