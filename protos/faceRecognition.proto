@@ -2,12 +2,24 @@ syntax = "proto3";
 
 package faceRecognition;
 
+message Rect {
+  float x = 1;
+  float y = 2;
+  float width = 3;
+  float height = 4;
+}
+
 message ImageRequest {
   bytes image = 1;  // We will encode our image as bytes
 }
 
 message MultipleImageRequest {
   repeated ImageRequest images = 1;  // A list of ImageRequests
+}
+
+message ImageWithRectsRequest {
+  ImageRequest image = 1;  // A list of ImageRequests
+  repeated Rect rects = 2;
 }
 
 message EmbeddingResponse {
@@ -21,4 +33,5 @@ message MultipleEmbeddingResponse {
 service FaceRecognition {
   rpc getFaceEmbedding (ImageRequest) returns (EmbeddingResponse);
   rpc getFaceEmbeddings (MultipleImageRequest) returns (MultipleEmbeddingResponse);
+  rpc getFaceEmbeddings2 (ImageWithRectsRequest) returns (MultipleEmbeddingResponse);
 }

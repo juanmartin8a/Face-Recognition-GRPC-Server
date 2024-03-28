@@ -92,6 +92,42 @@ class FaceRecognition(faceRecognition_pb2_grpc.FaceRecognitionServicer):
 
     return response
 
+  def getFaceEmbeddings2(self, request, _): # _ is a placeholder for context
+    response = faceRecognition_pb2.MultipleEmbeddingResponse()
+    whole_image = Image.open(io.BytesIO(request.image)).convert('RGB')
+
+    # Crop faces
+    images = []
+    for rect in request.rects:
+        left = rect['x']
+        top = rect['y']
+        right = left + rect['width']
+        bottom = top + rect['height']
+
+        cropped_pil_image = whole_image.crop((left, top, right, bottom))
+
+        image_tensor = self.preprocess(cropped_pil_image)
+        images.append(image_tensor)
+
+    input = torch.stack(tuple(images), dim=0)
+
+    input = input.numpy()
+
+    res = self.model.run(None, {self.model.get_inputs()[0].name: input})
+    embeddings = res[0].tolist()
+
+    embeddings_float64 = np.array(embeddings)
+    embeddings_float32 = embeddings_float64.astype(np.float32)
+
+    embeddings = embeddings_float32.tolist()
+
+    for embedding in embeddings:
+      embedding_response = faceRecognition_pb2.EmbeddingResponse()
+      embedding_response.embedding.extend(embedding)
+      response.embeddings.extend([embedding_response])
+
+    return response
+
   def _process_image(self, image_bytes):
     image = Image.open(io.BytesIO(image_bytes)).convert('RGB')
     image_tensor = self.preprocess(image)
