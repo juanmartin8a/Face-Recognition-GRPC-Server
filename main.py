@@ -99,10 +99,10 @@ class FaceRecognition(faceRecognition_pb2_grpc.FaceRecognitionServicer):
     # Crop faces
     images = []
     for rect in request.rects:
-        left = rect['x']
-        top = rect['y']
-        right = left + rect['width']
-        bottom = top + rect['height']
+        left = rect.x
+        top = rect.y
+        right = left + rect.width
+        bottom = top + rect.height
 
         cropped_pil_image = whole_image.crop((left, top, right, bottom))
 
