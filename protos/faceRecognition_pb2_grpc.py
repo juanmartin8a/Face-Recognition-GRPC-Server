@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import protos.faceRecognition_pb2 as faceRecognition_pb2
+import protos.faceRecognition_pb2 as faceRecognition__pb2
 
 
 class FaceRecognitionStub(object):
@@ -16,13 +16,18 @@ class FaceRecognitionStub(object):
         """
         self.getFaceEmbedding = channel.unary_unary(
                 '/faceRecognition.FaceRecognition/getFaceEmbedding',
-                request_serializer=faceRecognition_pb2.ImageRequest.SerializeToString,
-                response_deserializer=faceRecognition_pb2.EmbeddingResponse.FromString,
+                request_serializer=faceRecognition__pb2.ImageRequest.SerializeToString,
+                response_deserializer=faceRecognition__pb2.EmbeddingResponse.FromString,
                 )
         self.getFaceEmbeddings = channel.unary_unary(
                 '/faceRecognition.FaceRecognition/getFaceEmbeddings',
-                request_serializer=faceRecognition_pb2.MultipleImageRequest.SerializeToString,
-                response_deserializer=faceRecognition_pb2.MultipleEmbeddingResponse.FromString,
+                request_serializer=faceRecognition__pb2.MultipleImageRequest.SerializeToString,
+                response_deserializer=faceRecognition__pb2.MultipleEmbeddingResponse.FromString,
+                )
+        self.getFaceEmbeddings2 = channel.unary_unary(
+                '/faceRecognition.FaceRecognition/getFaceEmbeddings2',
+                request_serializer=faceRecognition__pb2.ImageWithRectsRequest.SerializeToString,
+                response_deserializer=faceRecognition__pb2.MultipleEmbeddingResponse.FromString,
                 )
 
 
@@ -41,18 +46,29 @@ class FaceRecognitionServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def getFaceEmbeddings2(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_FaceRecognitionServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'getFaceEmbedding': grpc.unary_unary_rpc_method_handler(
                     servicer.getFaceEmbedding,
-                    request_deserializer=faceRecognition_pb2.ImageRequest.FromString,
-                    response_serializer=faceRecognition_pb2.EmbeddingResponse.SerializeToString,
+                    request_deserializer=faceRecognition__pb2.ImageRequest.FromString,
+                    response_serializer=faceRecognition__pb2.EmbeddingResponse.SerializeToString,
             ),
             'getFaceEmbeddings': grpc.unary_unary_rpc_method_handler(
                     servicer.getFaceEmbeddings,
-                    request_deserializer=faceRecognition_pb2.MultipleImageRequest.FromString,
-                    response_serializer=faceRecognition_pb2.MultipleEmbeddingResponse.SerializeToString,
+                    request_deserializer=faceRecognition__pb2.MultipleImageRequest.FromString,
+                    response_serializer=faceRecognition__pb2.MultipleEmbeddingResponse.SerializeToString,
+            ),
+            'getFaceEmbeddings2': grpc.unary_unary_rpc_method_handler(
+                    servicer.getFaceEmbeddings2,
+                    request_deserializer=faceRecognition__pb2.ImageWithRectsRequest.FromString,
+                    response_serializer=faceRecognition__pb2.MultipleEmbeddingResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -76,8 +92,8 @@ class FaceRecognition(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/faceRecognition.FaceRecognition/getFaceEmbedding',
-            faceRecognition_pb2.ImageRequest.SerializeToString,
-            faceRecognition_pb2.EmbeddingResponse.FromString,
+            faceRecognition__pb2.ImageRequest.SerializeToString,
+            faceRecognition__pb2.EmbeddingResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -93,7 +109,24 @@ class FaceRecognition(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/faceRecognition.FaceRecognition/getFaceEmbeddings',
-            faceRecognition_pb2.MultipleImageRequest.SerializeToString,
-            faceRecognition_pb2.MultipleEmbeddingResponse.FromString,
+            faceRecognition__pb2.MultipleImageRequest.SerializeToString,
+            faceRecognition__pb2.MultipleEmbeddingResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def getFaceEmbeddings2(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/faceRecognition.FaceRecognition/getFaceEmbeddings2',
+            faceRecognition__pb2.ImageWithRectsRequest.SerializeToString,
+            faceRecognition__pb2.MultipleEmbeddingResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

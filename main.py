@@ -93,6 +93,7 @@ class FaceRecognition(faceRecognition_pb2_grpc.FaceRecognitionServicer):
     return response
 
   def getFaceEmbeddings2(self, request, _): # _ is a placeholder for context
+    print("hello there")
     response = faceRecognition_pb2.MultipleEmbeddingResponse()
     whole_image = Image.open(io.BytesIO(request.image)).convert('RGB')
 
