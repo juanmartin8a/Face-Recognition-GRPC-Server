@@ -47,7 +47,7 @@ class FaceRecognition(faceRecognition_pb2_grpc.FaceRecognitionServicer):
   def getFaceEmbedding(self, request, _): # _ is a placeholder for context
     response = faceRecognition_pb2.EmbeddingResponse()
 
-    image = self._process_image(request.image)
+    image = self._process_image(request.image.image)
 
     image = image.unsqueeze(0)
 
@@ -93,9 +93,8 @@ class FaceRecognition(faceRecognition_pb2_grpc.FaceRecognitionServicer):
     return response
 
   def getFaceEmbeddings2(self, request, _): # _ is a placeholder for context
-    print("hello there")
     response = faceRecognition_pb2.MultipleEmbeddingResponse()
-    whole_image = Image.open(io.BytesIO(request.image)).convert('RGB')
+    whole_image = Image.open(io.BytesIO(request.image.image)).convert('RGB')
 
     # Crop faces
     images = []
