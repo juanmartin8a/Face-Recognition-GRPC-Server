@@ -1,0 +1,7 @@
+grpcio
+grpcio-health-checking
+numpy
+Pillow
+torch
+torchvision
+onnxruntime
